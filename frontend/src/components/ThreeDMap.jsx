@@ -3,7 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Box, Text } from '@react-three/drei';
 
 // A single shelf component
-const Shelf = ({ position, rotation = [0, 0, 0], label, isHighlighted, targetShelf, shelfNames = ['1', '2', '3'] }) => {
+const Shelf = ({ position, rotation = [0, 0, 0], label, isHighlighted, targetShelf, shelfNames = ['1', '2', '3', '4', '5', '6'], isDoubleSided = true }) => {
   // We'll render up to 3 shelves visually (Top, Middle, Bottom)
   const visualHeights = [1, 0, -1]; // y-positions for Top, Middle, Bottom
 
@@ -16,28 +16,56 @@ const Shelf = ({ position, rotation = [0, 0, 0], label, isHighlighted, targetShe
 
       {/* Render Planks dynamically based on visualHeights and shelfNames */}
       {visualHeights.map((yPos, index) => {
-        // If the backend has fewer shelves defined, don't break, just use empty or default
-        const shelfName = shelfNames[index] || `Unnamed-${index+1}`;
-        const isShelfHighlighted = isHighlighted && targetShelf === shelfName;
+        // Front Shelves
+        const frontShelfName = shelfNames[index] || `Unnamed-${index+1}`;
+        const isFrontShelfHighlighted = isHighlighted && targetShelf === frontShelfName;
         const isBase = yPos === -1;
         
+        // Back Shelves
+        const backShelfName = shelfNames[index + 3] || `Unnamed-${index + 4}`;
+        const isBackShelfHighlighted = isHighlighted && targetShelf === backShelfName;
+        
         return (
-          <group key={index} position={[0, yPos, 0]}>
-            {/* Plank/Base */}
-            <Box args={isBase ? [4, 0.2, 1] : [4, 0.1, 0.8]}>
-              <meshStandardMaterial color={isShelfHighlighted ? '#ef4444' : (isHighlighted ? '#5eead4' : (isBase ? '#9ca3af' : '#d1d5db'))} />
-            </Box>
-            
-            {/* Text Label on the Plank */}
-            <Text 
-              position={[0, isBase ? 0.11 : 0.06, 0.38]} 
-              fontSize={0.25} 
-              color={isShelfHighlighted ? '#ffffff' : '#374151'}
-              anchorY="bottom"
-              anchorX="center"
-            >
-              SHELF-{shelfName}
-            </Text>
+          <group key={index}>
+            {/* FRONT SIDE */}
+            <group position={[0, yPos, 0]}>
+              {/* Plank/Base */}
+              <Box args={isBase ? [4, 0.2, 1] : [4, 0.1, 0.8]}>
+                <meshStandardMaterial color={isFrontShelfHighlighted ? '#ef4444' : (isHighlighted ? '#5eead4' : (isBase ? '#9ca3af' : '#d1d5db'))} />
+              </Box>
+              
+              {/* Text Label on the Plank */}
+              <Text 
+                position={[0, isBase ? 0.11 : 0.06, 0.38]} 
+                fontSize={0.25} 
+                color={isFrontShelfHighlighted ? '#ffffff' : '#374151'}
+                anchorY="bottom"
+                anchorX="center"
+              >
+                SHELF-{frontShelfName}
+              </Text>
+            </group>
+
+            {/* BACK SIDE */}
+            {isDoubleSided && (
+              <group position={[0, yPos, -0.9]} rotation={[0, Math.PI, 0]}>
+                {/* Plank/Base */}
+                <Box args={isBase ? [4, 0.2, 1] : [4, 0.1, 0.8]}>
+                  <meshStandardMaterial color={isBackShelfHighlighted ? '#ef4444' : (isHighlighted ? '#5eead4' : (isBase ? '#9ca3af' : '#d1d5db'))} />
+                </Box>
+                
+                {/* Text Label on the Plank */}
+                <Text 
+                  position={[0, isBase ? 0.11 : 0.06, 0.38]} 
+                  fontSize={0.25} 
+                  color={isBackShelfHighlighted ? '#ffffff' : '#374151'}
+                  anchorY="bottom"
+                  anchorX="center"
+                >
+                  SHELF-{backShelfName}
+                </Text>
+              </group>
+            )}
           </group>
         );
       })}
@@ -129,6 +157,7 @@ const SupermarketLayout = ({ selectedLocation, layout }) => {
         isHighlighted={isWallHighlighted}
         targetShelf={wallTargetShelf}
         shelfNames={layout?.shelves}
+        isDoubleSided={false}
       />
     );
   }
