@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Box, Text, Sphere, Cone, Html, Environment } from '@react-three/drei';
 import * as THREE from 'three';
@@ -290,14 +290,24 @@ const MapPin = ({ position }) => {
 const CameraController = ({ targetData, defaultCamPos }) => {
   const { camera } = useThree();
   const controlsRef = useRef();
+  
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [currentTarget, setCurrentTarget] = useState(null);
+
+  useEffect(() => {
+    setCurrentTarget(targetData);
+    setIsAnimating(true);
+  }, [targetData]);
 
   useFrame((state, delta) => {
-    if (targetData) {
-      const { pos, isBack, isWall } = targetData;
-      
-      let desiredPos;
-      let lookTarget;
+    if (!isAnimating) return;
 
+    let desiredPos;
+    let lookTarget;
+
+    if (currentTarget) {
+      const { pos, isBack, isWall } = currentTarget;
+      
       if (isWall) {
         // Wall shelves face -X (towards the aisles). Position camera at -X to look at them.
         desiredPos = new THREE.Vector3(pos[0] - 12, pos[1] + 8, pos[2]);
@@ -308,23 +318,21 @@ const CameraController = ({ targetData, defaultCamPos }) => {
         desiredPos = new THREE.Vector3(pos[0], pos[1] + 8, pos[2] + zOffset);
         lookTarget = new THREE.Vector3(pos[0], pos[1], pos[2] + (isBack ? -0.9 : 0));
       }
-      
-      camera.position.lerp(desiredPos, 4 * delta);
-      
-      if (controlsRef.current) {
-        controlsRef.current.target.lerp(lookTarget, 4 * delta);
-        controlsRef.current.update();
-      }
     } else {
       // Smoothly return to the default overview position
-      const desiredPos = new THREE.Vector3(...defaultCamPos);
-      const lookTarget = new THREE.Vector3(0, 0, 0);
-      
-      camera.position.lerp(desiredPos, 3 * delta);
-      
-      if (controlsRef.current) {
-        controlsRef.current.target.lerp(lookTarget, 3 * delta);
-        controlsRef.current.update();
+      desiredPos = new THREE.Vector3(...defaultCamPos);
+      lookTarget = new THREE.Vector3(0, 0, 0);
+    }
+    
+    camera.position.lerp(desiredPos, 4 * delta);
+    
+    if (controlsRef.current) {
+      controlsRef.current.target.lerp(lookTarget, 4 * delta);
+      controlsRef.current.update();
+
+      // Stop animating if we're very close to the target
+      if (camera.position.distanceTo(desiredPos) < 0.1 && controlsRef.current.target.distanceTo(lookTarget) < 0.1) {
+        setIsAnimating(false);
       }
     }
   });
@@ -336,6 +344,7 @@ const CameraController = ({ targetData, defaultCamPos }) => {
       enableZoom={true}
       enableRotate={true}
       maxPolarAngle={Math.PI / 2 - 0.1} // Prevent looking below the floor
+      onStart={() => setIsAnimating(false)} // User interaction interrupts animation
     />
   );
 };
