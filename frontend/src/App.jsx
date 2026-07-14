@@ -12,6 +12,19 @@ import OrderHistory from './pages/OrderHistory';
 
 function App() {
   const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     const handleOpen = () => setIsNotesOpen(true);
@@ -20,7 +33,7 @@ function App() {
   }, []);
   return (
     <Router>
-      <div className="min-h-screen flex flex-col relative bg-gray-50">
+      <div className={`min-h-screen flex flex-col relative bg-gradient-to-br from-indigo-50 via-teal-50 to-emerald-100 dark:from-gray-900 dark:via-gray-900 dark:to-slate-900 dark:text-gray-100 transition-colors duration-500`}>
         <div 
           className="absolute inset-0 pointer-events-none z-0 opacity-10"
           style={{ 
@@ -31,7 +44,7 @@ function App() {
           }}
         ></div>
         <div className="relative z-10 flex flex-col flex-1">
-          <Navbar onNotesClick={() => setIsNotesOpen(true)} />
+          <Navbar onNotesClick={() => setIsNotesOpen(true)} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
           <ShoppingNotes isOpen={isNotesOpen} onClose={() => setIsNotesOpen(false)} />
           <main className="flex-1 w-full flex flex-col">
             <Routes>

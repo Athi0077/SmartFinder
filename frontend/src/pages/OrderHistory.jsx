@@ -49,44 +49,48 @@ const OrderHistory = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50">
+      <div className="flex-1 flex items-center justify-center bg-transparent">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-gray-50 p-6 md:p-12 overflow-y-auto">
+    <div className="flex-1 bg-transparent p-6 md:p-12 overflow-y-auto">
       <div className="max-w-4xl mx-auto space-y-8">
         
         <div>
-          <h1 className="text-3xl font-black text-gray-900 mb-2">My Orders</h1>
-          <p className="text-gray-500">Track and view your recent online orders.</p>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-2">My Orders</h1>
+          <p className="text-gray-500 dark:text-gray-400">Track and view your recent online orders.</p>
         </div>
 
         {orders.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 text-center">
-            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No orders found</h3>
-            <p className="text-gray-500">You haven't placed any online orders yet.</p>
+          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-3xl p-12 shadow-md border border-white/50 dark:border-white/10 text-center">
+            <Package className="w-16 h-16 text-gray-300 dark:text-gray-500 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No orders found</h3>
+            <p className="text-gray-500 dark:text-gray-400">You haven't placed any online orders yet.</p>
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map(order => (
-              <div key={order._id} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 overflow-hidden relative">
+            {orders.map((order, index) => (
+              <div 
+                key={order._id} 
+                className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-3xl p-6 shadow-md border border-white/50 dark:border-white/10 overflow-hidden relative transition-all hover:shadow-lg animate-fade-in-up opacity-0"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 
-                <div className="flex flex-wrap gap-4 justify-between items-start mb-6 border-b border-gray-100 pb-6">
+                <div className="flex flex-wrap gap-4 justify-between items-start mb-6 border-b border-white/40 dark:border-white/10 pb-6">
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Order ID</p>
-                    <p className="font-mono font-medium text-gray-900">{order._id.substring(order._id.length - 8).toUpperCase()}</p>
+                    <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Order ID</p>
+                    <p className="font-mono font-medium text-gray-900 dark:text-gray-200">{order._id.substring(order._id.length - 8).toUpperCase()}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Date</p>
-                    <p className="font-medium text-gray-900">{new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                    <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Date</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-200">{new Date(order.createdAt).toLocaleDateString()} {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Amount</p>
-                    <p className="font-black text-gray-900 text-lg">${order.totalAmount.toFixed(2)}</p>
+                    <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">Total Amount</p>
+                    <p className="font-black text-gray-900 dark:text-white text-lg">${order.totalAmount.toFixed(2)}</p>
                   </div>
                   <div>
                     <span className={`px-4 py-2 rounded-full text-sm font-bold flex items-center border ${getStatusColor(order.status)}`}>
@@ -97,22 +101,22 @@ const OrderHistory = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-gray-900 mb-4">Items Ordered</h4>
-                  <ul className="divide-y divide-gray-100 border border-gray-100 rounded-xl bg-gray-50 overflow-hidden">
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-4">Items Ordered</h4>
+                  <ul className="divide-y divide-white/30 dark:divide-white/10 border border-white/40 dark:border-white/10 rounded-xl bg-white/40 dark:bg-gray-700/40 backdrop-blur-sm overflow-hidden">
                     {order.items.map((item, idx) => (
-                      <li key={idx} className="flex gap-4 items-center p-4 hover:bg-gray-100/50 transition-colors">
-                        <div className="h-12 w-12 bg-white rounded-lg flex items-center justify-center p-1 border border-gray-100 shadow-sm">
+                      <li key={idx} className="flex gap-4 items-center p-4 hover:bg-white/60 dark:hover:bg-gray-700/60 transition-colors">
+                        <div className="h-12 w-12 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-lg flex items-center justify-center p-1 border border-white/60 dark:border-white/10 shadow-sm">
                           {item.product?.image ? (
                             <img src={item.product.image} className="max-w-full max-h-full object-contain" />
                           ) : (
-                            <Package className="w-5 h-5 text-gray-300" />
+                            <Package className="w-5 h-5 text-gray-300 dark:text-gray-500" />
                           )}
                         </div>
                         <div className="flex-1">
-                          <p className="font-bold text-gray-900 text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">Qty: {item.quantity} • ${item.price?.toFixed(2)} each</p>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">{item.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Qty: {item.quantity} • ${item.price?.toFixed(2)} each</p>
                         </div>
-                        <div className="font-black text-gray-900">
+                        <div className="font-black text-gray-900 dark:text-white">
                           ${(item.price * item.quantity).toFixed(2)}
                         </div>
                       </li>
@@ -120,15 +124,15 @@ const OrderHistory = () => {
                   </ul>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-100 flex flex-wrap gap-x-8 gap-y-4 text-sm bg-gray-50/50 p-4 rounded-2xl">
+                <div className="mt-6 pt-6 border-t border-white/40 dark:border-white/10 flex flex-wrap gap-x-8 gap-y-4 text-sm bg-white/30 dark:bg-gray-700/30 backdrop-blur-sm p-4 rounded-2xl">
                   <div>
-                    <span className="text-gray-500 block mb-1">Deliver to:</span>
-                    <strong className="text-gray-900 block">{order.customerName}</strong>
-                    <span className="text-gray-600 block">{order.address}</span>
+                    <span className="text-gray-500 dark:text-gray-400 block mb-1">Deliver to:</span>
+                    <strong className="text-gray-900 dark:text-white block">{order.customerName}</strong>
+                    <span className="text-gray-600 dark:text-gray-300 block">{order.address}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500 block mb-1">Contact:</span>
-                    <strong className="text-gray-900">{order.mobileNo}</strong>
+                    <span className="text-gray-500 dark:text-gray-400 block mb-1">Contact:</span>
+                    <strong className="text-gray-900 dark:text-white">{order.mobileNo}</strong>
                   </div>
                 </div>
 

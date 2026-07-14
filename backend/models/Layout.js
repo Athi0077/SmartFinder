@@ -22,6 +22,10 @@ const layoutSchema = new mongoose.Schema(
       type: [String],
       required: true,
       default: ['1', '2', '3', '4', '5'],
+    },
+    walls: {
+      type: [String],
+      default: [],
     }
   },
   {

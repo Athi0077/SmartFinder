@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Store, ShoppingBag, Menu, X, Package, Grid, Map, HomeIcon } from 'lucide-react';
+import { ShoppingCart, Store, ShoppingBag, Menu, X, Package, Grid, Map, HomeIcon, Moon, Sun } from 'lucide-react';
 
-const Navbar = ({ onNotesClick }) => {
+const Navbar = ({ onNotesClick, isDarkMode, setIsDarkMode }) => {
   const location = useLocation();
   const isAdmin = location.pathname.includes('/admin123');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -11,15 +11,15 @@ const Navbar = ({ onNotesClick }) => {
   const activeAdminTab = queryParams.get('tab') || 'products';
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-md shadow-sm border-b border-white/50 dark:border-white/10 sticky top-0 z-50 transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/" className="flex-shrink-0 flex items-center space-x-2">
-              <div className="bg-primary-500 p-2 rounded-lg">
+              <div className="bg-primary-500 p-2 rounded-lg animate-float shadow-md">
                 <Store className="h-6 w-6 text-white" />
               </div>
-              <span className="font-bold text-xl text-gray-900 hidden sm:block">
+              <span className="font-bold text-xl text-gray-900 dark:text-white hidden sm:block transition-colors">
                 SmartFinder
               </span>
             </Link>
@@ -31,27 +31,34 @@ const Navbar = ({ onNotesClick }) => {
               <>
                 <Link 
                   to="/purchases" 
-                  className={`font-medium transition-colors ${location.pathname === '/purchases' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}
+                  className={`font-medium transition-all duration-300 hover:-translate-y-0.5 ${location.pathname === '/purchases' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'}`}
                 >
                   All Products
                 </Link>
                 <Link 
                   to="/shop" 
-                  className={`font-medium transition-colors flex items-center gap-1 ${location.pathname === '/shop' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}
+                  className={`font-medium transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 ${location.pathname === '/shop' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'}`}
                 >
                   <ShoppingBag className="w-4 h-4" /> Shop Online
                 </Link>
                 <Link 
                   to="/orders" 
-                  className={`font-medium transition-colors flex items-center gap-1 ${location.pathname === '/orders' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}
+                  className={`font-medium transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-1 ${location.pathname === '/orders' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'}`}
                 >
                    My Orders
                 </Link>
                 <button 
                   onClick={onNotesClick}
-                  className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
+                  className="text-gray-500 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 p-2 rounded-full hover:bg-primary-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 active:scale-90 shadow-sm bg-white/50 dark:bg-gray-800/50 border border-white/60 dark:border-white/10"
                 >
                   <ShoppingCart className="h-6 w-6" />
+                </button>
+                <button 
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="text-gray-500 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 p-2 rounded-full hover:bg-primary-50 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 active:scale-90 shadow-sm bg-white/50 dark:bg-gray-800/50 border border-white/60 dark:border-white/10 ml-2"
+                  title="Toggle Dark Mode"
+                >
+                  {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </button>
               </>
             )}

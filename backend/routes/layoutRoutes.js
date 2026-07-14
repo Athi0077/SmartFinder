@@ -17,17 +17,18 @@ router.get('/', async (req, res) => {
 
 router.put('/', async (req, res) => {
   try {
-    const { rows, columns, shelves } = req.body;
+    const { rows, columns, shelves, walls } = req.body;
     let layout = await Layout.findOne();
     
     if (layout) {
-      layout.rows = rows || layout.rows;
-      layout.columns = columns || layout.columns;
-      layout.shelves = shelves || layout.shelves;
+      layout.set('rows', rows || layout.rows);
+      layout.set('columns', columns || layout.columns);
+      layout.set('shelves', shelves || layout.shelves);
+      layout.set('walls', walls || layout.walls);
       const updatedLayout = await layout.save();
       res.json(updatedLayout);
     } else {
-      layout = await Layout.create({ rows, columns, shelves });
+      layout = await Layout.create({ rows, columns, shelves, walls });
       res.status(201).json(layout);
     }
   } catch (error) {
