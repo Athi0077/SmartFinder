@@ -29,6 +29,12 @@ const Navbar = ({ onNotesClick, isDarkMode, setIsDarkMode }) => {
           <div className="hidden md:flex items-center space-x-4">
             {!isAdmin && (
               <>
+              <Link 
+                  to="/" 
+                  className={`font-medium transition-all duration-300 hover:-translate-y-0.5 ${location.pathname === '/' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'}`}
+                >
+                  Home
+                </Link>
                 <Link 
                   to="/purchases" 
                   className={`font-medium transition-all duration-300 hover:-translate-y-0.5 ${location.pathname === '/purchases' ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'}`}
@@ -81,7 +87,7 @@ const Navbar = ({ onNotesClick, isDarkMode, setIsDarkMode }) => {
             )}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className="text-gray-500 hover:text-primary-600 p-2 rounded-md"
+              className="text-gray-500 hover:text-primary-600 p-2 rounded-md tour-hamburger-menu"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

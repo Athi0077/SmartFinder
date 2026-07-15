@@ -11,6 +11,15 @@ const CustomerView = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState([]);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const placeholders = ["Search 'Apple'", "Search 'Chocolate'", "Search 'Wheat'", "Search 'Salt'"];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [layout, setLayout] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,7 +91,8 @@ const CustomerView = () => {
   // Filter products based on search query
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.description.toLowerCase().includes(searchQuery.toLowerCase())
+    p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.category?.name && p.category.name.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
@@ -93,14 +103,30 @@ const CustomerView = () => {
         <div className="w-full lg:w-1/3 flex flex-col space-y-6 lg:h-[calc(100vh-8rem)] h-auto">
 
           {/* Search Bar */}
-          <div className="relative flex-shrink-0">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="relative flex-shrink-0 tour-search-bar">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-20">
               <Search className="h-5 w-5 text-gray-400 dark:text-gray-500" />
             </div>
+            
+            {/* Custom Scrolling Placeholder */}
+            {!searchQuery && (
+              <div className="absolute top-0 bottom-0 left-10 right-3 pointer-events-none overflow-hidden z-10">
+                <div 
+                  className="transition-transform duration-500 ease-in-out h-full"
+                  style={{ transform: `translateY(-${placeholderIndex * 100}%)` }}
+                >
+                  {placeholders.map((text, i) => (
+                    <div key={i} className="h-full flex items-center text-gray-500 dark:text-gray-400 sm:text-lg">
+                      {text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <input
               type="search"
-              className="block w-full pl-10 pr-3 py-4 border border-white/50 dark:border-white/10 rounded-2xl leading-5 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-lg shadow-sm text-gray-900 dark:text-white"
-              placeholder="Search for a specific product..."
+              className="block w-full pl-10 pr-3 py-4 border border-white/50 dark:border-white/10 rounded-2xl leading-5 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-lg shadow-sm text-gray-900 dark:text-white transition-all duration-500 relative z-0"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);

@@ -3,6 +3,7 @@ import CustomerView from './pages/CustomerView';
 import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navbar';
 import ShoppingNotes from './components/ShoppingNotes';
+import OnboardingTour from './components/OnboardingTour';
 import { useState, useEffect } from 'react';
 import bgImage from './assets/bg.jpeg';
 
@@ -44,6 +45,7 @@ function App() {
           }}
         ></div>
         <div className="relative z-10 flex flex-col flex-1">
+          <OnboardingTour />
           <Navbar onNotesClick={() => setIsNotesOpen(true)} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
           <ShoppingNotes isOpen={isNotesOpen} onClose={() => setIsNotesOpen(false)} />
           <main className="flex-1 w-full flex flex-col">

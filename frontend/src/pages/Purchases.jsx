@@ -135,7 +135,7 @@ const Purchases = () => {
               <div className="flex flex-col space-y-2 mt-auto">
                 <button 
                   onClick={() => handleLocationClick(product)}
-                  className="w-full flex items-center justify-center space-x-2 bg-primary-50 text-primary-700 hover:bg-primary-100 px-4 py-2 rounded-xl font-semibold transition-colors"
+                  className="w-full flex items-center justify-center space-x-2 bg-primary-50 text-primary-700 hover:bg-primary-100 px-4 py-2 rounded-xl font-semibold transition-colors tour-location-btn"
                 >
                   <MapPin className="h-4 w-4" />
                   <span>Location</span>
